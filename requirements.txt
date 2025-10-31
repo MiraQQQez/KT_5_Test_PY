@@ -1,0 +1,16 @@
+# Основные библиотеки для работы с API
+requests==2.31.0
+
+# Библиотека для тестирования
+pytest==7.4.3
+pytest-html==4.1.1
+
+# Allure для красивых отчетов
+allure-pytest==2.13.2
+
+# Pydantic для валидации данных
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Дополнительные утилиты
+python-dotenv==1.0.0
