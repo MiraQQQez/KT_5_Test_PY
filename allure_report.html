@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allure Report - Test Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        
+        .header-info {
+            text-align: right;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stat-icon {
+            font-size: 24px;
+        }
+        
+        .tests-container {
+            padding: 40px;
+        }
+        
+        .test-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .test-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .test-header {
+            padding: 20px 25px;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        
+        .test-header:hover {
+            background: #f0f0f0;
+        }
+        
+        .test-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+        
+        .status-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .test-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .test-meta {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .duration {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .test-body {
+            padding: 25px;
+            display: none;
+            background: white;
+        }
+        
+        .test-body.active {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .test-section {
+            margin-bottom: 20px;
+        }
+        
+        .test-section h4 {
+            font-size: 14px;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .test-steps {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .step {
+            padding: 8px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step-icon {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .attachment {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .attachment-title {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        
+        .attachment-content {
+            background: white;
+            padding: 12px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            color: #333;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            border-radius: 8px;
+            color: #c62828;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .expand-icon {
+            transition: transform 0.3s;
+            font-size: 20px;
+            color: #999;
+        }
+        
+        .expand-icon.active {
+            transform: rotate(180deg);
+        }
+        
+        .labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .label {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <div class="logo">📊</div>
+                Allure Test Report
+            </h1>
+            <div class="header-info">
+                <div>Сгенерировано: 07.12.2025 14:28:02</div>
+                <div>Всего тестов: 4</div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Всего тестов</h3>
+                <div class="stat-value" style="color: #667eea;">
+                    <span class="stat-icon">📝</span>
+                    4
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Успешно</h3>
+                <div class="stat-value" style="color: #4caf50;">
+                    <span class="stat-icon">✓</span>
+                    4
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Провалено</h3>
+                <div class="stat-value" style="color: #f44336;">
+                    <span class="stat-icon">✗</span>
+                    0
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Пропущено</h3>
+                <div class="stat-value" style="color: #9e9e9e;">
+                    <span class="stat-icon">○</span>
+                    0
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Длительность</h3>
+                <div class="stat-value" style="color: #ff9800;">
+                    <span class="stat-icon">⏱</span>
+                    1.88s
+                </div>
+            </div>
+        </div>
+        
+        <div class="tests-container">
+            <h2 style="margin-bottom: 25px; color: #333; font-size: 24px;">Результаты тестов</h2>
+
+            <div class="test-card">
+                <div class="test-header" onclick="toggleTest(0)">
+                    <div class="test-title">
+                        <div class="status-badge" style="background-color: #4caf50;">
+                            ✓
+                        </div>
+                        <div>
+                            <div class="test-name">Удаление заказа</div>
+                            <div style="font-size: 12px; color: #999; margin-top: 5px;">tests.test_store_api.TestStoreOrders#test_delete_order</div>
+                        </div>
+                    </div>
+                    <div class="test-meta">
+                        <span class="duration">145ms</span>
+                        <span class="expand-icon" id="icon-0">▼</span>
+                    </div>
+                </div>
+                <div class="test-body" id="body-0">
+
+                    <div class="test-section">
+                        <h4>Метки</h4>
+                        <div class="labels">
+<span class="label">story: Orders</span><span class="label">severity: normal</span><span class="label">feature: Store API</span><span class="label">parentSuite: tests</span><span class="label">suite: test_store_api</span><span class="label">subSuite: TestStoreOrders</span><span class="label">host: DESKTOP-7FP4HQJ</span><span class="label">thread: 21128-MainThread</span><span class="label">framework: pytest</span><span class="label">language: cpython3</span><span class="label">package: tests.test_store_api</span>
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <h4>Шаги выполнения</h4>
+                        <div class="test-steps">
+<div class="step"><span class="step-icon" style="color: #4caf50;">✓</span> Отправка DELETE запроса на /store/order/6</div><div class="step"><span class="step-icon" style="color: #4caf50;">✓</span> Проверка успешного удаления</div>
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <h4>Вложения</h4>
+
+                        <div class="attachment">
+                            <div class="attachment-title">📎 Delete Order Response</div>
+                            <div class="attachment-content">{'code': 200, 'type': 'unknown', 'message': '6'}</div>
+                        </div>
+
+                        <div class="attachment">
+                            <div class="attachment-title">📎 stdout</div>
+                            <div class="attachment-content">
+============================================================
+Запуск теста: test_delete_order
+============================================================
+
+==================================================
+POST запрос
+URL: https://petstore.swagger.io/v2/store/order
+Status Code: 200
+Reason: OK
+Response JSON:
+{'complete': False,
+ 'id': 6,
+ 'petId': 4,
+ 'quantity': 7,
+ 'shipDate': '2025-12-07T14:26:14.728+0000',
+ 'status': 'placed'}
+==================================================
+
+
+==================================================
+DELETE запрос
+URL: https://petstore.swagger.io/v2/store/order/6
+Status Code: 200
+Reason: OK
+Response JSON:
+{'code': 200, 'message': '6', 'type': 'unknown'}
+==================================================
+
+
+==================================================
+DELETE запрос
+URL: https://petstore.swagger.io/v2/store/order/6
+Status Code: 404
+Reason: Not Found
+Response JSON:
+{'code': 404, 'message': 'Order Not Found', 'type': 'unknown'}
+==================================================
+
+Ошибка при выполнении запроса: 404 Client Error: Not Found for url: https://petstore.swagger.io/v2/store/order/6
+
+============================================================
+Завершение теста: test_delete_order
+============================================================
+</div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="test-card">
+                <div class="test-header" onclick="toggleTest(1)">
+                    <div class="test-title">
+                        <div class="status-badge" style="background-color: #4caf50;">
+                            ✓
+                        </div>
+                        <div>
+                            <div class="test-name">Создание нового заказа</div>
+                            <div style="font-size: 12px; color: #999; margin-top: 5px;">tests.test_store_api.TestStoreOrders#test_create_order</div>
+                        </div>
+                    </div>
+                    <div class="test-meta">
+                        <span class="duration">756ms</span>
+                        <span class="expand-icon" id="icon-1">▼</span>
+                    </div>
+                </div>
+                <div class="test-body" id="body-1">
+
+                    <div class="test-section">
+                        <h4>Метки</h4>
+                        <div class="labels">
+<span class="label">story: Orders</span><span class="label">severity: critical</span><span class="label">feature: Store API</span><span class="label">parentSuite: tests</span><span class="label">suite: test_store_api</span><span class="label">subSuite: TestStoreOrders</span><span class="label">host: DESKTOP-7FP4HQJ</span><span class="label">thread: 21128-MainThread</span><span class="label">framework: pytest</span><span class="label">language: cpython3</span><span class="label">package: tests.test_store_api</span>
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <h4>Шаги выполнения</h4>
+                        <div class="test-steps">
+<div class="step"><span class="step-icon" style="color: #4caf50;">✓</span> Создание данных заказа через Pydantic</div><div class="step"><span class="step-icon" style="color: #4caf50;">✓</span> Отправка POST запроса на /store/order</div><div class="step"><span class="step-icon" style="color: #4caf50;">✓</span> Валидация ответа через Pydantic модель Order</div>
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <h4>Вложения</h4>
+
+                        <div class="attachment">
+                            <div class="attachment-title">📎 stdout</div>
+                            <div class="attachment-content">
+============================================================
+Запуск теста: test_create_order
+============================================================
+
+==================================================
+POST запрос
+URL: https://petstore.swagger.io/v2/store/order
+Status Code: 200
+Reason: OK
+Response JSON:
+{'complete': False,
+ 'id': 12345,
+ 'petId': 100,
+ 'quantity': 5,
+ 'shipDate': '2025-12-07T14:26:13.539+0000',
+ 'status': 'placed'}
+==================================================
+
+
+============================================================
+Завершение теста: test_create_order
+============================================================
+</div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="test-card">
+                <div class="test-header" onclick="toggleTest(2)">
+                    <div class="test-title">
+                        <div class="status-badge" style="background-color: #4caf50;">
+                            ✓
+                        </div>
+                        <div>
+                            <div class="test-name">Получение инвентаря магазина</div>
+                            <div style="font-size: 12px; color: #999; margin-top: 5px;">tests.test_store_api.TestStoreInventory#test_get_inventory</div>
+                        </div>
+                    </div>
+                    <div class="test-meta">
+                        <span class="duration">838ms</span>
+                        <span class="expand-icon" id="icon-2">▼</span>
+                    </div>
+                </div>
+                <div class="test-body" id="body-2">
+
+                    <div class="test-section">
+                        <h4>Метки</h4>
+                        <div class="labels">
+<span class="label">feature: Store API</span><span class="label">severity: critical</span><span class="label">story: Inventory</span><span class="label">parentSuite: tests</span><span class="label">suite: test_store_api</span><span class="label">subSuite: TestStoreInventory</span><span class="label">host: DESKTOP-7FP4HQJ</span><span class="label">thread: 21128-MainThread</span><span class="label">framework: pytest</span><span class="label">language: cpython3</span><span class="label">package: tests.test_store_api</span>
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <h4>Шаги выполнения</h4>
+                        <div class="test-steps">
+<div class="step"><span class="step-icon" style="color: #4caf50;">✓</span> Отправка GET запроса на /store/inventory</div><div class="step"><span class="step-icon" style="color: #4caf50;">✓</span> Проверка что ответ является словарем</div><div class="step"><span class="step-icon" style="color: #4caf50;">✓</span> Проверка что в ответе есть данные</div>
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <h4>Вложения</h4>
+
+                        <div class="attachment">
+                            <div class="attachment-title">📎 stdout</div>
+                            <div class="attachment-content">
+============================================================
+Запуск теста: test_get_inventory
+============================================================
+
+==================================================
+GET запрос
+URL: https://petstore.swagger.io/v2/store/inventory
+Status Code: 200
+Reason: OK
+Response JSON:
+{'<EOF>': 5,
+ 'NOT available': 1,
+ 'approved': 2,
+ 'availabl': 1,
+ 'available': 458,
+ 'delivered': 1,
+ 'invalid_status': 3,
+ 'kuplen': 1,
+ 'new_status': 33,
+ 'pending': 85,
+ 'placed': 1,
+ 'slod': 9,
+ 'sold': 97,
+ 'string': 277}
+==================================================
+
+
+============================================================
+Завершение теста: test_get_inventory
+============================================================
+</div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="test-card">
+                <div class="test-header" onclick="toggleTest(3)">
+                    <div class="test-title">
+                        <div class="status-badge" style="background-color: #4caf50;">
+                            ✓
+                        </div>
+                        <div>
+                            <div class="test-name">Получение заказа по ID</div>
+                            <div style="font-size: 12px; color: #999; margin-top: 5px;">tests.test_store_api.TestStoreOrders#test_get_order_by_id</div>
+                        </div>
+                    </div>
+                    <div class="test-meta">
+                        <span class="duration">142ms</span>
+                        <span class="expand-icon" id="icon-3">▼</span>
+                    </div>
+                </div>
+                <div class="test-body" id="body-3">
+
+                    <div class="test-section">
+                        <h4>Метки</h4>
+                        <div class="labels">
+<span class="label">story: Orders</span><span class="label">severity: normal</span><span class="label">feature: Store API</span><span class="label">parentSuite: tests</span><span class="label">suite: test_store_api</span><span class="label">subSuite: TestStoreOrders</span><span class="label">host: DESKTOP-7FP4HQJ</span><span class="label">thread: 21128-MainThread</span><span class="label">framework: pytest</span><span class="label">language: cpython3</span><span class="label">package: tests.test_store_api</span>
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <h4>Шаги выполнения</h4>
+                        <div class="test-steps">
+<div class="step"><span class="step-icon" style="color: #4caf50;">✓</span> Отправка GET запроса на /store/order/1</div><div class="step"><span class="step-icon" style="color: #4caf50;">✓</span> Валидация ответа через Pydantic</div>
+                        </div>
+                    </div>
+
+                    <div class="test-section">
+                        <h4>Вложения</h4>
+
+                        <div class="attachment">
+                            <div class="attachment-title">📎 stdout</div>
+                            <div class="attachment-content">
+============================================================
+Запуск теста: test_get_order_by_id
+============================================================
+
+==================================================
+POST запрос
+URL: https://petstore.swagger.io/v2/store/order
+Status Code: 200
+Reason: OK
+Response JSON:
+{'complete': False,
+ 'id': 1,
+ 'petId': 63,
+ 'quantity': 2,
+ 'shipDate': '2025-12-07T14:26:14.298+0000',
+ 'status': 'placed'}
+==================================================
+
+
+==================================================
+GET запрос
+URL: https://petstore.swagger.io/v2/store/order/1
+Status Code: 200
+Reason: OK
+Response JSON:
+{'complete': False,
+ 'id': 1,
+ 'petId': 63,
+ 'quantity': 2,
+ 'shipDate': '2025-12-07T14:26:14.298+0000',
+ 'status': 'placed'}
+==================================================
+
+
+==================================================
+DELETE запрос
+URL: https://petstore.swagger.io/v2/store/order/1
+Status Code: 200
+Reason: OK
+Response JSON:
+{'code': 200, 'message': '1', 'type': 'unknown'}
+==================================================
+
+
+============================================================
+Завершение теста: test_get_order_by_id
+============================================================
+</div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="footer">
+            <p>Отчет сгенерирован автоматически | PetStore API Testing Project</p>
+            <p style="margin-top: 5px; font-size: 12px;">Powered by Allure Framework & Custom HTML Generator</p>
+        </div>
+    </div>
+    
+    <script>
+        function toggleTest(index) {
+            const body = document.getElementById('body-' + index);
+            const icon = document.getElementById('icon-' + index);
+            
+            body.classList.toggle('active');
+            icon.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

@@ -2,15 +2,15 @@
 requests==2.31.0
 
 # Библиотека для тестирования
-pytest==7.4.3
+pytest==8.3.0
 pytest-html==4.1.1
 
 # Allure для красивых отчетов
-allure-pytest==2.13.2
+allure-pytest==2.15.0
 
-# Pydantic для валидации данных
-pydantic==2.5.0
-pydantic-settings==2.1.0
+# Pydantic для валидации данных (совместимые с Python 3.13)
+pydantic==2.10.5
+pydantic-settings==2.7.0
 
 # Дополнительные утилиты
 python-dotenv==1.0.0
